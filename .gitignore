@@ -1,2 +1,3 @@
 .vscode
-static/settings/setting.json
+setting.json
+tmp.yaml

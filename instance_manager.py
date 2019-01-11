@@ -17,6 +17,9 @@ class InstanceManager:
     def launch(self,bin_type,autoware_ip,rosbridge_server_port):
         for exe_data in self.exe_dict:
             if bin_type == exe_data['name']:
+                for instance in self.instance_list:
+                    if instance.autoware_ip == autoware_ip:
+                        self.terminate(autoware_ip)
                 proc = subprocess.Popen(exe_data['path'])
                 instance = SimulatorInstance(bin_type,autoware_ip,rosbridge_server_port,proc)
                 self.instance_list.append(instance)
@@ -28,3 +31,6 @@ class InstanceManager:
             else:
                 tmp_list.append(instance)
         self.instance_list = tmp_list
+
+if __name__ == "__main__":
+    pass
