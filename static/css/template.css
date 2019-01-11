@@ -1,0 +1,7 @@
+body {background-image: url("/static/images/background.jpg"); }
+
+.jumbotron {
+    background-image: url("/static/images/background.jpg");
+    background:#ddd url(image.jpg) no-repeat center center;
+    background-size:70% auto;
+  }
