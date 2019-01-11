@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-bootstrap = "*"
+json = "*"
 
 [requires]
 python_version = "3.7"
