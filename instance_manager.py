@@ -1,36 +1,36 @@
 import json
 from collections import OrderedDict
 import subprocess
+import uuid
+
+import os
 
 class SimulatorInstance:
-    def __init__(self,bin_type,autoware_ip,rosbridge_server_port,proc):
+    def __init__(self,bin_type,proc,instance_id):
         self.type = bin_type
-        self.autoware_ip = autoware_ip
-        self.rosbridge_server_port = rosbridge_server_port
         self.proc = proc
+        self.instance_id = instance_id
 
 class InstanceManager:
     def __init__(self,setting_filepath):
         f = open(setting_filepath, 'r')
         self.exe_dict = json.load(f)
         self.instance_list = []
-    def launch(self,bin_type,autoware_ip,rosbridge_server_port):
+    def launch(self,bin_type):
         for exe_data in self.exe_dict:
             if bin_type == exe_data['name']:
-                for instance in self.instance_list:
-                    if instance.autoware_ip == autoware_ip:
-                        self.terminate(autoware_ip)
-                proc = subprocess.Popen(exe_data['path'])
-                instance = SimulatorInstance(bin_type,autoware_ip,rosbridge_server_port,proc)
+                config_path = os.getcwd() + '/configure.yaml'
+                cmd = exe_data['path'] + ' --config' + ' ' + config_path
+                proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                instance_id = uuid.uuid4()
+                instance = SimulatorInstance(bin_type,proc,instance_id)
                 self.instance_list.append(instance)
-    def terminate(self,autoware_ip):
-        tmp_list = []
+                return instance_id
+    def terminate(self,instance_id):
         for instance in self.instance_list:
-            if instance.autoware_ip == autoware_ip:
+            if str(instance_id) == str(instance.instance_id):
+                print("terminate instance id " + str(instance_id))
                 instance.proc.terminate()
-            else:
-                tmp_list.append(instance)
-        self.instance_list = tmp_list
 
 if __name__ == "__main__":
     pass

@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_bootstrap import Bootstrap
 
 import instance_manager
+import request_parser
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -16,14 +17,20 @@ def index():
 @app.route('/simulator/launch', methods=['POST'])
 def launch():
     if request.headers['Content-Type'] != 'application/json':
-        return jsonify(res='error'), 400
-    manager.launch(request.json['bin_type'],request.json['autoware_ip'],request.json['rosbridge_server_port'])
-    return jsonify(res='ok')
+        return jsonify(res='error',description='failed to parse as json string'), 400
+    parser = request_parser.LaunchRequestParser()
+    result = parser.parse(request.json)
+    if result == False:
+        return jsonify(res='error',description='failed to get simulator params from json string'), 400
+    parser.write()
+    instance_id = manager.launch(request.json['bin_type'])
+    return jsonify(res='ok',instance_id=instance_id)
 
 @app.route('/simulator/terminate', methods=['POST'])
 def terminate():
     if request.headers['Content-Type'] != 'application/json':
         return jsonify(res='error'), 400
+    manager.terminate(request.json['instance_id'])
     return jsonify(res='ok')
 
 if __name__ == '__main__':
