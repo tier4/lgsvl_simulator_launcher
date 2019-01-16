@@ -23,7 +23,7 @@ def launch():
     if result == False:
         return jsonify(res='error',description='failed to get simulator params from json string'), 400
     parser.write()
-    instance_id = manager.launch(request.json['bin_type'])
+    instance_id = manager.launch(request.json['bin_type'],parser.getIpList())
     return jsonify(res='ok',instance_id=instance_id)
 
 @app.route('/simulator/terminate', methods=['POST'])
