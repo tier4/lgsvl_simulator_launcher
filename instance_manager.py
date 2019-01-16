@@ -18,7 +18,7 @@ class InstanceManager:
         self.exe_dict = json.load(f)
         self.instance_list = []
     def launch(self,bin_type,ip_list):
-        for exe_data in self.exe_dict:au
+        for exe_data in self.exe_dict:
             if bin_type == exe_data['name']:
                 for autoware_address in ip_list:
                     result = self.isAlreadyExist(autoware_address)
