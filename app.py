@@ -10,9 +10,9 @@ bootstrap = Bootstrap(app)
 
 manager = instance_manager.InstanceManager("setting.json")
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+#@app.route('/')
+#def index():
+    #return render_template('index.html')
 
 @app.route('/simulator/launch', methods=['POST'])
 def launch():
